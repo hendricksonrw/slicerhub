@@ -19,6 +19,9 @@ class SimpleSlic3r:
 
 	def gen_slice_id(self):
 		return randrange(500000)
+	
+	def send_email(self, addreess, file_name):
+		print 'send e-mail'		
 
 @route('/')
 def serve_index():
@@ -40,6 +43,7 @@ def slice_model():
 
 			#write data to disk
 			slice_id = repr(slicer.gen_slice_id())
+			slice_id = os.path.join('slices', slice_id)
 			if not os.path.exists(slice_id):
 					    os.makedirs(slice_id)
 			model_filename = os.path.join(slice_id, model.filename)
@@ -54,7 +58,7 @@ def slice_model():
 			
 			#slice up the newly served models and return the gcode
 			slicer.slice(model_filename, config_filename, output_filename)
-			return static_file(output_filename, os.path.join(slice_id))
+			return static_file(output_filename, root=os.path.join(slice_id), download=True)
 	return 'You are missing a field'
 
 @route('/slice/<slice_id>/gcode/', method='GET')
@@ -63,6 +67,7 @@ def serve_gcode_by_slice_id(slice_id=''):
 			return static_file()
 
 run(host='localhost', port=8080, debug=True)
+#bottle.run(server=bottle.CGIServer)
 
 if __name__ == '__main__':
 		slicer = SimpleSlic3r()

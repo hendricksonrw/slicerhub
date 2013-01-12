@@ -5,6 +5,4 @@ from bottle import route
 def index():    
 	return 'Hello World!'
 
-if __name__ == '__main__':    
-	from wsgiref.handlers import CGIHandler    
-	CGIHandler().run(bottle.default_app())
+bottle.run(server=bottle.CGIServer)
