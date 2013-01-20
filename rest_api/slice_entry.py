@@ -10,17 +10,17 @@ def serve_index():
 def slice_model():
 	from multiprocessing import Process
 	from slicebase import SliceBase
+	from bottle import request
 	
 	email = request.forms.email
 	model = request.files.model
 	config = request.files.config
 
 	if email and model and config:
-		#p = Process(target=SliceBase.process_slice_request, args=(email, model, config))
-		#p.start()
+		p = Process(target=SliceBase.process_slice_request, args=(email, model, config))
+		p.start()
 		#p.join()
-		resp = SliceBase.process_slice_request(email, model, config)
-		return resp
+		return "Job was added successfully"
 	else:
 		return "You was missing some information, job was not added. %r %r %r" % (email, len(model), len(config))
 
