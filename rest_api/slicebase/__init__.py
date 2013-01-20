@@ -1,8 +1,7 @@
 #!/usr/bin/python
-import subprocess, re, os
-from  bottle import run, route, static_file, request
-from random import randrange
+import subprocess, re, os, sys
 from slic3rwrap import Slic3r
+
 class SliceBase():
 
 	@staticmethod
@@ -27,6 +26,7 @@ class SliceBase():
 		config = request.files.config
 
 		if email and model and config:
+			try:
 				# Read the files - THIS IS DANGEROUS FOR LARGE FILES
 				model_raw = model.file.read()
 				config_raw = config.file.read()
@@ -41,25 +41,30 @@ class SliceBase():
 				# Make sure the slice has a unique folder
 				slice_id = repr(slicer.gen_slice_id())
 				slice_folder = os.path.join(os.getcwd(), 'slices', slice_id)
-				if not os.path.exists(slice_id):
-							os.makedirs(slice_id)
+				if not os.path.exists(slice_folder):
+							os.makedirs(slice_folder)
 
 				# Write the 3D model to the new folder
 				model_filename = os.path.join(slice_folder, model.filename)
 				with open(model_filename, 'w') as f:
 					f.write(model_raw)
 					f.close()
-				# Write the Configuration to the new folder
+				# Write the Configuration to the new folder - If we have a user
+				# we need to write this config to their user dir
 				config_filename = os.path.join(slice_folder, config_filename + '.ini')
 				with open(config_filename, 'w') as f:
 					f.write(config_raw)
 					f.close()
 
-				# Write into th DB an instance of the Slice
+				# Write into the DB an instance of the Slice
 				# Slice should have timestamp of job start
 				# Slice shoudl have e-mail of who to send this too after
 				# If a User ID got passed in on the request - Put that in too (history)
 				# Adds the Slice to the job queue with status finished = False
+
+				return True , "Job Successfully added to the queue"
+			except:
+				return False, "Job was not added to the queue" , sys.exc_info()[0]
 	
 	@staticmethod			
 	def add_slice_job(slice_id):

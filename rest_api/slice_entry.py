@@ -16,12 +16,13 @@ def slice_model():
 	config = request.files.config
 
 	if email and model and config:
-		p = Process(target=SliceBase.process_slice_request, args=(email, model, config))
-		p.start()
-		p.join()
-		return "Job Added to the Queue"
+		#p = Process(target=SliceBase.process_slice_request, args=(email, model, config))
+		#p.start()
+		#p.join()
+		resp = SliceBase.process_slice_request(email, model, config)
+		return resp
 	else:
-		return "You was missing some information, job was not added. %r %r %r" % (email, model, config)
+		return "You was missing some information, job was not added. %r %r %r" % (email, len(model), len(config))
 
 @route('/slice/<slice_id>/gcode/', method='GET')
 def serve_gcode_by_slice_id(slice_id=''):
