@@ -66,7 +66,7 @@ def serve_gcode_by_slice_id(slice_id=''):
 	if slice_id != '':
 			return static_file()
 
-run(host='localhost', port=8080, debug=True)
+run(host='0.0.0.0', port=8080, debug=True)
 #bottle.run(server=bottle.CGIServer)
 
 if __name__ == '__main__':
