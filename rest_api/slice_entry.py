@@ -8,7 +8,6 @@ def serve_index():
 
 @route('/slice', method='POST')
 def slice_model():
-	from multiprocessing import Process
 	from slicebase import SliceBase
 	from bottle import request
 	
@@ -17,10 +16,11 @@ def slice_model():
 	config = request.files.config
 
 	if email and model and config:
-		p = Process(target=SliceBase.process_slice_request, args=(email, model, config))
-		p.start()
-		#p.join()
-		return "Job was added successfully"
+		result, message = SliceBase.process_slice_request(email, model, config)
+		if result:
+				return "Success:\t" + message
+		else:
+				return "Error:\t" + message
 	else:
 		return "You was missing some information, job was not added. %r %r %r" % (email, len(model), len(config))
 

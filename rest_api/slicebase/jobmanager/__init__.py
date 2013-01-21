@@ -28,12 +28,18 @@ class SliceJobManager():
 
 
 	def clean_jobs():
-		"""Go through the job queue and remove finished items and delete their files
+		"""Go through the Slice table and remove finished items and delete their files
 		off the hard drive, STL, gcode, ini if in the dir (save user INIs)
 		--- this should be used time sensitively
 		"""
 
-	def check_jobs():
+	def clean_pull():
+		"""This goes through the job queue and removes all finished rows. Makes sure
+		that the files actually exist. If not then re-enqueues job if it can, if 
+		it can't then it deletes the job.
+		"""
+
+	def check_pull():
 		"""This iterates over the processes that are currently active and polls them
 		for CPU usage and completion, updates the pull_queue with job state, and 
 		if there is room in the running_list starts more jobs in it."""
@@ -49,6 +55,10 @@ class SliceJobManager():
 		
 	def change_max_jobs(max_jobs):
 		"""Modifies what the max number of jobs that can be processed at a time.
+		"""
+
+	def run_stats():
+		"""Every day statistics should be generated on how much work was done during the day.
 		"""
 
 # Check how long it has been since we ran clean_jobs and run it

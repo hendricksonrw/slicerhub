@@ -21,9 +21,6 @@ class SliceBase():
 		to disk and stores the job in the db and adds it to the queue.
 		This should be kicked off in a process to not block the return.
 		"""
-		email = request.forms.email
-		model = request.files.model
-		config = request.files.config
 
 		if email and model and config:
 			try:
@@ -42,13 +39,14 @@ class SliceBase():
 				slice_id = repr(slicer.gen_slice_id())
 				slice_folder = os.path.join(os.getcwd(), 'slices', slice_id)
 				if not os.path.exists(slice_folder):
-							os.makedirs(slice_folder)
+					os.makedirs(slice_folder)
 
 				# Write the 3D model to the new folder
 				model_filename = os.path.join(slice_folder, model.filename)
 				with open(model_filename, 'w') as f:
 					f.write(model_raw)
 					f.close()
+				
 				# Write the Configuration to the new folder - If we have a user
 				# we need to write this config to their user dir
 				config_filename = os.path.join(slice_folder, config_filename + '.ini')
@@ -61,10 +59,11 @@ class SliceBase():
 				# Slice shoudl have e-mail of who to send this too after
 				# If a User ID got passed in on the request - Put that in too (history)
 				# Adds the Slice to the job queue with status finished = False
-
-				return True , "Job Successfully added to the queue"
-			except:
-				return False, "Job was not added to the queue" , sys.exc_info()[0]
+				message = "Job %s successfully added to the queue" % slice_id
+				return True , message
+			except Exception, e:
+				message = "Job was not added to the queue: " + str(sys.exc_info()[0]) + ":" + str(e)
+				return False, message 
 	
 	@staticmethod			
 	def add_slice_job(slice_id):
