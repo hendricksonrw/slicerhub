@@ -45,34 +45,34 @@ responds with
 Process job 
 GET /slices/<id number>/ -> JSON from db
 	200 - Return JSON
-		404 - ID didn’t exist in DB
-			401 - Not authenticated
-			PUT /slices/<id number>/
-			With JSON that includes statistics that go into the DB for time to slice
-			200 - JSON inserted into DB
-			400 - If JSON poorly formed
-			404 - If <id number> doesn’t exist
-			401 - Not authenticated
-			5** - If we run into a server error
-			PUT /slices/<id_number>/gcode
-			Posts the created Gcode to be written
-			200 - Gcode was written
-			401 - Not authenticated
-			5*** - We ran into a server error
-			GET /slices/<id number>/gcode -> Serve file
-			GET /slices/<id number>/config -> config for job
-			POST|PUT /slices/<id number>/config
-				405 - Method not allowed
-				GET /slices/<id number>/stls/<stl_num>/ -> stl for the job
-				POST|PUT /slices/<id number>/stls
-					405 - Method not allowed
-					GET /slices/<id number/stls/ -> returns zip of all STLs for job
+	404 - ID didn’t exist in DB
+	401 - Not authenticated
+PUT /slices/<id number>/
+	With JSON that includes statistics that go into the DB for time to slice
+	200 - JSON inserted into DB
+	400 - If JSON poorly formed
+	404 - If <id number> doesn’t exist
+	401 - Not authenticated
+	5** - If we run into a server error	
+PUT /slices/<id_number>/gcode
+	Posts the created Gcode to be written
+	200 - Gcode was written
+	401 - Not authenticated
+	5*** - We ran into a server error
+GET /slices/<id number>/gcode -> Serve file
+GET /slices/<id number>/config -> config for job
+POST|PUT /slices/<id number>/config
+	405 - Method not allowed
+GET /slices/<id number>/stls/<stl_num>/ -> stl for the job
+POST|PUT /slices/<id number>/stls
+	405 - Method not allowed
+GET /slices/<id number/stls/ -> returns zip of all STLs for job
 
-					Job State
-					GET /slices/<id number>/state
-						200 - JSON current state | XML current state
-						PUT /slices/<id number>/state
-							200 - Entry into the DB was successful
+	Job State
+	GET /slices/<id number>/state
+	200 - JSON current state | XML current state
+	PUT /slices/<id number>/state
+	200 - Entry into the DB was successful
 
 run(host='0.0.0.0', port=8080, debug=True)
 #bottle.run(server=bottle.CGIServer)

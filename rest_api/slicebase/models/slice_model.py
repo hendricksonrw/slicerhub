@@ -1,13 +1,14 @@
+from mongoengine import DynamicDocument
 
 
-class Slice():
+class Slice(DynamicDocument):
 	
-	def __init__(self, job_id, stls, config, email, **kwargs):
+	def __init__(self, stls, config, email, **kwargs):
 		"""
 		Requires a job_id, stls list, config filename, and an e-mail."""
 
 		# If we don't have these we cannot run this job
-		if job_id or stls or config or email is None:
+		if stls is None or config is None or email is None:
 			raise Exception
 
 		# Assign given required properties
@@ -24,4 +25,5 @@ class Slice():
 		self.end_time = kwargs.get('end_time', '')
 		self.public = kwargs.get('public', True)
 		self.priority = kwargs.get('priority', 0)
+
 
