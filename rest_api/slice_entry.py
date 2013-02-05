@@ -9,7 +9,6 @@ def serve_index():
 @route('/slices', method='POST')
 def slice_model():
 	from slicebase import SliceBase
-	from bottle import request
 	
 	email = request.forms.email
 	model = request.files.model
@@ -24,7 +23,18 @@ def slice_model():
 	else:
 		return "You was missing some information, job was not added. %r %r %r" % (email, len(model), len(config))
 
-@route('/slice/<slice_id>/gcode/', method='GET')
+
+@route('/slices/<slice_id:int>/', method='GET')
+def serve_slice_page(slice_id=''):
+	"""If successful returns 200 with JSON representation of a slice job
+	"""
+	if slice_id != '':
+		return SliceBase.return_static_slice(request)
+
+@route('/slices/<slice_id:int>/config', method='GET')
+def 
+
+@route('/slices/<slice_id:int>/gcode/', method='GET')
 def serve_gcode_by_slice_id(slice_id=''):
 	if slice_id != '':
 			return static_file()
@@ -73,8 +83,7 @@ GET /slices/<id number/stls/ -> returns zip of all STLs for job
 	200 - JSON current state | XML current state
 	PUT /slices/<id number>/state
 	200 - Entry into the DB was successful
-
+"""
 run(host='0.0.0.0', port=8080, debug=True)
-#bottle.run(server=bottle.CGIServer)
 
 

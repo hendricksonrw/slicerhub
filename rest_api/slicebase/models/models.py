@@ -1,3 +1,3 @@
-from slice_model import Slice
+import slice_job
 
-Slice = Slice
+SliceJob = slice_job.SliceJob

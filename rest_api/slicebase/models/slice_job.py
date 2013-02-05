@@ -1,29 +1,26 @@
-from mongoengine import DynamicDocument
+import datetime
 
+from mongoengine import *
 
-class Slice(DynamicDocument):
-	
-	def __init__(self, stls, config, email, **kwargs):
-		"""
-		Requires a job_id, stls list, config filename, and an e-mail."""
+class SliceJob(Document):
 
-		# If we don't have these we cannot run this job
-		if stls is None or config is None or email is None:
-			raise Exception
+	"""
+	Simple class that handles any information that needs to be persisted related
+	to a slicing job.
+	"""
+	# Required properties
+	job_id = StringField(required=True)	
+	config = StringField(required=True)	
+	email = StringField(required=True)	
+	stls = ListField(StringField(), required=True)
 
-		# Assign given required properties
-		self.job_id = job_id
-		self.stls = stls
-		self.config = config
-		self.email = email
+	# Optional properties
+	state = StringField(default='CREATED')
+	output_name = StringField(default='%s.gcode' % str(job_id))
+	submit_time = DateTimeField(default=datetime.datetime.utcnow())
+	end_time = DateTimeField()
+	public = BooleanField(default=True)
+	priority = IntField(default=0)
 
-		# Assign potential optional properties with defaults
-		self.state = kwargs.get('state', 'CREATED')
-		self.output_name = kwargs.get('output_name', '%s.gcode' % str(job_id))
-		self.submit_time = kwargs.get('submit_time', datetime.datetime.utcnow())
-		self.start_time = kwargs.get('start_time', '')
-		self.end_time = kwargs.get('end_time', '')
-		self.public = kwargs.get('public', True)
-		self.priority = kwargs.get('priority', 0)
 
 
