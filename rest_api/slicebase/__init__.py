@@ -65,7 +65,4 @@ class SliceBase():
 				message = "Job was not added to the queue: " + str(sys.exc_info()[0]) + ":" + str(e)
 				return False, message 
 	
-	@staticmethod			
-	def add_slice_job(slice_id):
-		"""Takes the POST request and inserts it into the queue to handle it.
-		"""
+

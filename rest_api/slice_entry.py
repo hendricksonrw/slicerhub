@@ -1,6 +1,6 @@
 #!/usr/bin/python
-import os
-from  bottle import run, route, static_file, request
+import os, logging
+from  bottle import run, route, static_file, request, response
 from api import sliceapi
 
 @route('/')
@@ -28,11 +28,19 @@ def slice_model():
 	if email and model and config:
 		result, message = sliceapi.process_slice_request(email, model, config)
 		if result:
-				return "Success:\t" + message
+				response.body = "Success:\t" + message
+				response.status = 200
+				return response
 		else:
-				return "Error:\t" + message
+				response.body = "Error:\t" + message
+				response.status = 500
+				return response
 	else:
-		return "You was missing some information, job was not added. %r %r %r" % (email, len(model), len(config))
+		message = "You was missing some information, job was not added. %r %r %r" % (email, len(model), len(config))
+		logging.info(message)
+		response.body = message
+		response.status = 400
+		return response
 
 
 @route('/slices/<slice_id:int>/', method='GET')
@@ -86,9 +94,15 @@ def serve_stls_by_slice_id(slice_id=''):
 	if slice_id != '':
 		return	sliceapi.serve_stls_by_slice_id(request, slice_id) 
 
-#POST|PUT /slices/<id number>/stls
-#	405 - Method not allowed
-
+@route('/slices/<slice_id:int>/stls/', method='GET')
+def serve_stls_by_slice_id(slice_id=''):
+	"""	
+	POST|PUT /slices/<id number>/stls
+	405 - Method not allowed
+	"""
+	response.status = 405
+	return response
+	
 @route('/slices/<slice_id:int>/state/', method='GET')
 def serve_state_by_slice_id(slice_id=''):
 	"""
@@ -102,11 +116,11 @@ def serve_state_by_slice_id(slice_id=''):
 def write_state_by_slice_id(slice_id=''):
 	"""
 		PUT /slices/<id number>/state
-	200 - Entry into the DB was successful
+	200 - Entry into the DB was successful, hurray!
 	"""
 	if slice_id != '':
 		return	sliceapi.write_state_by_slice_id(request, slice_id) 
 
-run(host='0.0.0.0', port=8080, debug=True)
+run(host='0.0.0.0', port=8080, debug=True, reloader=True)
 
 
