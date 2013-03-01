@@ -13,6 +13,15 @@ class TestEntry(unittest.TestCase):
 		self.test_config = 'test_config.ini'
 		self.test_email = 'test@slicerhub.com'
 
+	def test_serve_stls_405(self):
+		"""Test we're not able to POST or PUT"""
+		r = requests.post('http://localhost:8080/slice/10323/stls/')
+		self.assertEqual(r.status_code, 405)
+
+		r = requests.put('http://localhost:8080/slice/10323/stls/')
+		self.assertEqual(r.status_code, 405)
+
+
 	def test_get_index(self):
 		"""Test base index get works"""
 		r = requests.get('http://localhost:8080/')

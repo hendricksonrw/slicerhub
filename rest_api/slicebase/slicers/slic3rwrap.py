@@ -3,6 +3,7 @@ Slic3r Python Wrapper
 Copyright 2013 Ross Hendricksonn
 BSD License
 """
+import logging
 import re, subprocess
 from random import randrange
 
@@ -26,9 +27,10 @@ class Slic3r():
 	    """Takes a filename and path for the model to be sliced and for the 
 		config to be used while slicing. Also has an output_name added."""
 
-		wolrd = ''
+		logging.info("got here")
+		world = ''
 		
-		#args = ['--load', config_name, '--output-filename-format', output_name, stl_name]
+		#airgs = ['--load', config_name, '--output-filename-format', output_name, stl_name]
 		#result = subprocess.call([self.slicer_bin + 'slic3r', args[0], args[1], args[2], args[3], args[4]])
 		# if result > 0 : we successfuly sliced | == 0 then we failed to slice
 		return result

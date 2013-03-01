@@ -48,7 +48,7 @@ def serve_slice_data(slice_id=''):
 	"""GET /slices/<id number>/ -> JSON from db
 	200 - Return JSON"""
 	if slice_id != '':
-		return sliceapi.return_static_slice(request)
+		return sliceapi.return_static_slice(request, slice_id)
 
 @route('/slices/<slice_id:int>/', method='PUT')
 def write_slice_data(slice_id=''):
@@ -94,7 +94,7 @@ def serve_stls_by_slice_id(slice_id=''):
 	if slice_id != '':
 		return	sliceapi.serve_stls_by_slice_id(request, slice_id) 
 
-@route('/slices/<slice_id:int>/stls/', method='GET')
+@route('/slices/<slice_id:int>/stls/', method='POST|PUT')
 def serve_stls_by_slice_id(slice_id=''):
 	"""	
 	POST|PUT /slices/<id number>/stls

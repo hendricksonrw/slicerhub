@@ -5,7 +5,7 @@ from slicers.slic3rwrap import Slic3r
 class SliceBase():
 
 	@staticmethod
-	def get_slice():
+	def get_slice(request, slice_id):
 		"""Going to need some way to get the slices for the slice URLs.
 		This method should make the SQLAlchemey calls and prep the
 		information to return through the request"""
