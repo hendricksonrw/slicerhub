@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import subprocess, re, os, sys
-from slic3rwrap import Slic3r
+from slicers.slic3rwrap import Slic3r
 
 class SliceBase():
 

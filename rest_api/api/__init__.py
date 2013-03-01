@@ -1,3 +1,2 @@
-"""
-Main module entry point for API layers
+"""Main module entry point for API layers
 """

@@ -12,6 +12,5 @@ class TestSliceModel(unittest.TestCase):
 		"""Test we can create a slice object with the right params
 		"""
 		with self.assertRaises(Exception):
-			slice_one = models.Slice(stls=None, 
-											config='whatver.ini', 
-											email='jorge@jorge.com')
+			slice_one = models.Slice(
+				stls=None, config='whatver.ini', email='jorge@jorge.com')
