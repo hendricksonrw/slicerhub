@@ -65,7 +65,7 @@ class TestSlicerBase(unittest.TestCase):
         slice_folder = os.path.join(os.getcwd(), 'slices', slice_id)
         stl_path = os.path.join(slice_folder, self.model_filename)
         config_path = os.path.join(slice_folder, self.config_filename)
-        output_path = os.path.join(slice_folder, output_filename)
+        output_path = output_filename
 
         result, message = SliceBase.slice_job_files(
                 self.email, self.slicer, self.version, stl_path, config_path,
