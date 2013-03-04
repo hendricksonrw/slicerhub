@@ -36,15 +36,15 @@ class SliceBase():
             logging.info('model %s' % str(model.file))
             model_raw = model.file.read()
             config_raw = config.file.read()
-            
+ 
             return SliceBase.process_slice_job(email, model_raw,
                     config_raw)
 
         except Exception, e:
             message = "Job add failed: %s" % str(e)
-            return False, message 
+            return False, message
 
-    @staticmethod  
+    @staticmethod
     def slice_job_files(
             email, slicer, version, model_path, config_path,
             output_path, job_id):
@@ -59,9 +59,14 @@ class SliceBase():
         if not slicer:
             raise Exception('unable to create slicer')
 
-        slicer.slice_job(model_path, config_path, output_path)
-        # When slicer is finished add task to queue to send state update
-        # and notification for job_id
+        r = slicer.slice_job(model_path, config_path, output_path)
+        logging.info('result: %s' % r)
+        if r:
+            # When slicer is finished add task to queue to send state update
+            # and notification for job_id
+            return True
+        else:
+            return False
 
     @staticmethod
     def write_slice_files(
@@ -74,15 +79,15 @@ class SliceBase():
 
         if not email or not model_filename or not model_raw or not config_raw:
             return False, 'Malformed arguments: %s:%s:%s' % (email,
-                    model_filename, config_filename) 
+                    model_filename, config_filename)
         try:
-            logging.info('start slice')                            
+            logging.info('start slice')
 
-            # Make static factory call to create specified slicer 
+            # Make static factory call to create specified slicer
             slicer = SlicerFactory.create_slicer(slicer, version)
             if not slicer:
                 raise Exception
-            
+
             output_filename = model_filename.replace('\.\w+', '') + '.gcode'
 
             # Write data to disk
@@ -115,8 +120,9 @@ class SliceBase():
             # Adds the Slice to the job queue with status finished = False
             message = "Job %s successfully added to the queue" % slice_id
             return True , message, slice_id
+
         except Exception, e:
-                message = "Job add failed: " + str(sys.exc_info()[0]) + ":" + str(e)
-                return False, message 
+                m = "Job add failed: " + str(sys.exc_info()[0]) + ":" + str(e)
+                return False, m
 
 

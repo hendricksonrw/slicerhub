@@ -8,9 +8,9 @@ class SliceJob(Document):
 	to a slicing job.
 	"""
 	# Required properties
-	job_id = StringField(required=True)	
-	config = StringField(required=True)	
-	email = StringField(required=True)	
+	job_id = StringField(required=True)
+	config = StringField(required=True)
+	email = StringField(required=True)
 	stls = ListField(StringField(), required=True)
 
 	# Optional properties
@@ -26,7 +26,5 @@ print 'result: %s' % result
 
 
 for job in SliceJob.objects:
-	print job.job_id
-	print job
-	
-
+    print job.job_id
+    print job
