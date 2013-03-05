@@ -11,6 +11,8 @@ from random import randrange
 
 class Slic3rWrappers():
 
+    VERSION097 = '0.9.7'
+
     @staticmethod
     def create_slicer(version):
 
@@ -29,7 +31,6 @@ class Slic3rWrappers():
 
 class Slic3r():
 
-    VERSION097 = '0.9.7'
 
     def __init__(self, slicer_bin):
         logging.info('attempting to create wrapper around %s' % slicer_bin)

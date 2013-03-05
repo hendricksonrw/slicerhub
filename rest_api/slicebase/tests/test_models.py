@@ -1,6 +1,7 @@
 import unittest
 from mongoengine import *
-import models
+
+from slicebase import models
 
 class TestSliceJob(unittest.TestCase):
 
@@ -16,7 +17,9 @@ class TestSliceJob(unittest.TestCase):
 		"""Make sure that we can create and persist a slice job.
 		"""
 		num_jobs = len(models.SliceJob.objects) + 1
-		temp_job = models.SliceJob(job_id=str(num_jobs), config='test.ini', stls=['one.stl'], email='test@test.com')
+		temp_job = models.SliceJob(
+			job_id=str(num_jobs), config='test.ini', stls=['one.stl'], 
+			responses=['test@test.com'])
 		temp_job.save()
 		self.assertTrue(temp_job.id)
 	
@@ -64,7 +67,7 @@ class TestSliceJob(unittest.TestCase):
 
 def create_dummy_slice():
 	num_jobs = len(models.SliceJob.objects) + 1
-	temp_job = models.SliceJob(job_id=str(num_jobs), config='test.ini', stls=['one.stl'], email='test@test.com')
+	temp_job = models.SliceJob(job_id=str(num_jobs), config='test.ini', stls=['one.stl'], responses=['test@test.com'])
 	temp_job.save()
 	return temp_job.id
 

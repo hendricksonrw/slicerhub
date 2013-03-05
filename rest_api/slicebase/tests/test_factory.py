@@ -1,6 +1,9 @@
 import logging
 import unittest
 
+from slicebase.slicers import SlicerFactory
+from slicebase.slicers.slic3rwrap import Slic3rWrappers
+
 class TestFactory(unittest.TestCase):
 
 	def startup(self):
@@ -12,9 +15,8 @@ class TestFactory(unittest.TestCase):
 		"""Create a slicer wrapper for different versions of slicer installed.
 		"""
 		slicer = SlicerFactory.SLIC3R
-		version = SlicerWrapper.Slicer.VERSION097
+		version = Slic3rWrappers.VERSION097
 
-		slicer_wrapper = SlicerFactory.create_slicer(slicer, version)
-		logging.info('got here')
-		self.assertIsNotNone(slicer_wrapper)
+		slicer = SlicerFactory.create_slicer(slicer, version)
+		self.assertIsNotNone(slicer)
 		

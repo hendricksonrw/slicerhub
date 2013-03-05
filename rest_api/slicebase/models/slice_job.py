@@ -47,6 +47,13 @@ def create_store_job(job_id, config, responses, stls):
     else:
         return None
 
+def update_job(job):
+	if not job:
+		return False
+	result = job.save()
+	if result:
+		return True
+
 def delete_job(job_id):
     """Removes a job from the db.
     """
