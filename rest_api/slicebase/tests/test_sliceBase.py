@@ -3,7 +3,6 @@ import unittest
 import os
 import re
 
-import bottle
 from slicebase import SliceBase
 from slicebase.slicers.slic3rwrap import Slic3r
 from slicebase.slicers import SlicerFactory
@@ -61,20 +60,6 @@ class TestSlicerBase(unittest.TestCase):
             os.rmdir(folder)
         except Exception, e:
             logging.WARNING('Test folder not deleted %s' % str(e))
-
-    def test_models_create_store_delete(self):
-        """Test data model layer.
-        """
-        job_id = 1308410
-
-        result = models.create_store_job(job_id, self.config_filename,
-                [self.model_filename], [self.email])
-
-        self.assertTrue(result)
-
-        result = models.delete_job(job_id)
-
-        self.assertTrue(result)
 
     def test_write_and_run_slice_files(self):
         """test that we can slice model using the slicer factory.
