@@ -48,18 +48,37 @@ def create_store_job(job_id, config, responses, stls):
         return None
 
 def update_job(job):
-	if not job:
-		return False
-	result = job.save()
-	if result:
-		return True
+    if not job:
+        return False
+    result = job.save()
+    if result:
+        return True
 
-def delete_job(job_id):
-    """Removes a job from the db.
+def get_job_by_id(job_id):
+    """Get the job from the db with an id.
     """
-    job = SliceJob.objects(job_id=job_id)
+    result = SliceJob.objects.get(job_id=job_id)
+    return result
+
+def remove_job(job):
+    """Remove job from db.
+    """
     if job:
         job.delete()
         return True
+    else:
+        return False
+
+def remove_job_by_id(job_id):
+    """Removes a job from the db using the job_id.
+    """
+    try:
+        job = SliceJob.objects.get(job_id=job_id)
+    except SliceJob.DoesNotExist:
+        job = None
+
+    if job:
+        result = remove_job(job)
+        return result
     else:
         return False

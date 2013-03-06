@@ -2,9 +2,11 @@ import logging
 import unittest
 import os
 import re
+import bottle
 
 from slicebase import SliceBase
 from slicebase.slicers.slic3rwrap import Slic3r
+from slicebase.slicers.slic3rwrap import Slic3rWrappers
 from slicebase.slicers import SlicerFactory
 from slicebase import models
 
@@ -17,7 +19,7 @@ class TestSlicerBase(unittest.TestCase):
         # These tests are meant to be fired off from the rest_api folder
         self.email = 'test@slicerhub.com'
         self.slicer = SlicerFactory.SLIC3R
-        self.version = Slic3r.VERSION097
+        self.version = Slic3rWrappers.VERSION097
         self.request = bottle.BaseRequest()
 
         self.model_filename = 'tests/test.stl'
