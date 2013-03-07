@@ -2,9 +2,11 @@
 import os
 import logging
 
+from slicebase import models
+
 class TaskHelper():
 
-   @staticmethod
+    @staticmethod
     def get_stl_config_path(slice_job):
         """Returns the full path to the stl and the config.
         """
@@ -50,25 +52,32 @@ class TaskHelper():
         Rev 1. Since we are all on one server this does not need to post. It
         will simply update the slice_job state and then save it.
         """
-        return False
+        if not slice_job or not state:
+            return False
 
-    @staticmethod
-    def post_gcode(slice_job, gcode):
-        """Takes the generated gcode and sends it to the main server.
+        slice_job.state = state
+        return models.update_job(slice_job)
 
-        Rev 1. This just writes the gcode into the write slice dir.
-        """
-
-        return False
 
     @staticmethod
     def send_notifications():
         """Iterates over notfication end points in the job and executes them.
+
+        Rev1.1 Should send an e-mail saying x job was finished.
         """
 
         return False
 
 # Unimplemented for Rev 1
+    @staticmethod
+    def post_gcode(slice_job, gcode):
+        """Takes the generated gcode and sends it to the main server.
+
+        Rev 1. This just writes the gcode into the write slice dir. Which
+        Slic3r does automatically
+        """
+
+        return False
 
     @staticmethod
     def delete_job_temp_files(file_paths):

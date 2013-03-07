@@ -6,8 +6,9 @@ from mongoengine import *
 class SliceState():
     """Simple light weight class for the states a job could be in.
     """
-    FAILED='failed'
-    SUCCESS='success'
+    FAILED='FAILED'
+    SUCCESS='SUCCESS'
+    CREATED='CREATED'
 
 class SliceJob(Document):
 
@@ -22,7 +23,7 @@ class SliceJob(Document):
     stls = ListField(StringField(), required=True)
 
     # Optional properties
-    state = StringField(default='CREATED')
+    state = StringField(default=SliceState.CREATED)
     output_name = StringField(default='%s.gcode' % str(job_id))
     submit_time = DateTimeField(default=datetime.datetime.utcnow())
     end_time = DateTimeField()

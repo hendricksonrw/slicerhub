@@ -8,6 +8,7 @@ from mongoengine import *
 
 from slicebase.celerystalk import TaskHelper
 from slicebase.models import SliceJob
+from slicebase.models import SliceState
 from slicebase import models
 
 class TestCeleryTasks(unittest.TestCase):
@@ -37,7 +38,7 @@ class TestCeleryTasks(unittest.TestCase):
         self.assertEqual(config_path, c_result)
 
     def test_get_output(self):
-        """Given a SliceJob generate the outpout filename.
+        """Given a SliceJob generate the output filename.
         """
 
         result = TaskHelper.generate_output(None)
@@ -48,6 +49,19 @@ class TestCeleryTasks(unittest.TestCase):
 
         self.assertEqual(compare, result)
 
+    def test_update_state(self):
+        """Test if our task update method works.
+        """
+
+        job = create_dummy_job()
+        job.state = SliceState.FAILED
+
+        self.assertEqual(job.state, SliceState.FAILED)
+
+        new_state = SliceState.SUCCESS
+        result = TaskHelper.update_job_state(job, new_state)
+        self.assertTrue(result)
+        self.assertEqual(job.state, new_state)
 
 def create_dummy_job():
     num_jobs = len(models.SliceJob.objects) + 1

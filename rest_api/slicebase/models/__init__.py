@@ -1,6 +1,7 @@
 import slice_job
 
 SliceJob = slice_job.SliceJob
+SliceState = slice_job.SliceState
 
 def create_store_job(job_id, config, stls, responses):
     """Creates a job and then stores it into the db.
