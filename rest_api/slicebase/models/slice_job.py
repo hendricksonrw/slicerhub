@@ -3,6 +3,12 @@ import logging
 
 from mongoengine import *
 
+class SliceState():
+    """Simple light weight class for the states a job could be in.
+    """
+    FAILED='failed'
+    SUCCESS='success'
+
 class SliceJob(Document):
 
     """Simple class that handles any information that needs to be persisted

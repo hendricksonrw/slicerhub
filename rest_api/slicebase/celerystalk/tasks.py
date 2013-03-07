@@ -1,42 +1,75 @@
-from celery import Celery
-from slicebase.slicers import SlicerFactory
 
-# Needs to be moved out to a config file
-celery = Celery('tasks', broker='amqp://guest@localhost//')
+
+import celery
+
+import celeryconfig
+from slicebase.slicers import SlicerFactory
+from slicbase.slicers.slice_job import SliceState
+from task_helper import TaskHelper
+
+celery = celery.config_from_object(celeryconfig)
 
 @celery.task
 def process_job(slice_job, slicer_type, slicer_version):
-	"""Celery Task that actually kicks off the slicing subprocess when 
+	"""Takes a slice_job and tries to generate gcode based on it.
+
+        Rev 1: This is all local, there are no temp files or POST/GET calls
+            because everything will be local. Eventually it will be moved
+            so a server could be devoted to just processing tasks so it would
+            have to communicate with another server to get stls, configs etc.
+
+        Celery Task that actually kicks off the slicing subprocess when
 	it is run. In the future should handle auto-merging the STLS into one
-	file. A slice_job is a Slice Object from models and contains all required
-	information to run a task
+	file. A slice_job is a Slice Object from models and contains all
+        required information to run a task.
+
+        Args:
+            slice_job: a SliceJob object
+            slicer_type: a string, 'slic3r' used by the factory to determine
+                which type of slicer to return.
+            slicer_version: a string, 'VERSION097' used by the factory to build
+                the path to the slicer executable
+        Returns:
+            True if the stls were sliced and everything was perfect.
+            False if there was an error.
 	"""
 
-	# If we have everything we need
-	if slice_job and slicer_type and slicer_version:
-		
-		# GET STL and write to temp dir
-		# GET config and write to temp dir
+	# If we don't have everything we need bail
+	if not slice_job or not slicer_type or not slicer_version:
+            TaskHelper.update_job_state(slice_job, SliceState.FAILED)
+            return False
 
-		# POST that the slicing job has started
-		slicer = SlicerFactory.create_slicer(slicer_type, slicer_version)
-		results = slicer.slice(slice_job.stl, config, output)
-		
-		# POST The status of the result of the job. If it sliced correctly
-		# and gcode is availble to download POST SUCCESS status.
-		
-		# On Success
-		# POST GCODE to job_id
-		# DELETE temp files used for slicing
-		# Kick off 'Notification' task for this job
-		return True
-	return False
+        # GET STL and write to temp dir
+        # GET config and write to temp dir
+        stl_path, config_path = TaskHelper.get_stl_config_path(slice_job)
+
+        output = TaskHelper.generate_output(slice_job)
+
+        # POST that the slicing job has started
+        slicer = SlicerFactory.create_slicer(slicer_type, slicer_version)
+        result = slicer.slice(stl_path, config_path, output)
+
+        # POST The status of the result of the job. If it sliced correctly
+        # and gcode is availble to download POST SUCCESS status.
+        # On Success
+        if not result:
+            TaskHelper.update_job_state(slice_job, SliceState.FAILED)
+
+        TaskHelper.post_gcode(output_path)
+        TaskHelper.update_job_state(slice_job, SliceState.SUCCESS)
+        TaskHelper.cleanup_temp(file_paths)
+
+        # Kick off 'Notification' task for this job
+        send_results.delay(slice_job, result)
+        return True
 
 @celery.task
 def send_results(slice_job, slicer_results):
-	"""Takes the messaging method (right now just an e-mail) and sends the 
+	"""Takes the messaging method (right now just an e-mail) and sends the
 	results of the slicing job to the job's e-mail address
 	"""
 
 	# Build E-mail text
 	# Should contain what happened and a link to their gcode file
+        TaskHelper.send_notifications(slice_job)
+        return True

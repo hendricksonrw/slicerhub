@@ -10,7 +10,8 @@ class SimpleSlic3r:
 		print 'slicing %s using config %s' % (stl_name, config_name)
 		dirty = "--load %s %s" % (config_name, stl_name)
 		args = ['--load', config_name, '--output-filename-format', output_name , stl_name]
-		return subprocess.call(["slic3r", args[0], args[1], args[2], args[3], args[4]])
+	        execute = '/home/hendricksonrw/utils/Slic3r097/bin/slic3r'
+                return subprocess.call([execute, args[0], args[1], args[2], args[3], args[4]])
 
 	def slice_name(self, filename):
 		filename = re.sub(r'\.\w+', '', filename)

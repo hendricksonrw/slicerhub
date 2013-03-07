@@ -3,3 +3,4 @@ mongoengine
 Celery
 nose
 requests
+celery-with-mongodb
