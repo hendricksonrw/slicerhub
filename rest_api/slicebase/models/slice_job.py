@@ -47,6 +47,7 @@ def create_job(job_id, config, responses, stls):
 def create_store_job(job_id, config, responses, stls):
     """Create and add to db.
     """
+    connect('testing')
     job = create_job(job_id, config, responses, stls)
     result = job.save()
 
@@ -65,8 +66,13 @@ def update_job(job):
 def get_job_by_id(job_id):
     """Get the job from the db with an id.
     """
-    result = SliceJob.objects.get(job_id=job_id)
-    return result
+    connect('testing')
+    try:
+        result = SliceJob.objects.get(job_id=job_id)
+        return result
+    except Exception, e:
+        logging.info('Exception:%s: %s' % (str(job_id), str(e)))
+        return None
 
 def remove_job(job):
     """Remove job from db.

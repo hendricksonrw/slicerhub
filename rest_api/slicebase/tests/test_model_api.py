@@ -65,6 +65,10 @@ class TestModelAPI(unittest.TestCase):
 
         self.assertIsNotNone(result)
 
+        result = models.get_job_by_id(1310841034102310)
+        logging.info('result not there: %s' % str(result))
+        self.assertIsNone(result)
+
     def test_models_update_job(self):
         """ Tests if we can update properties and persist them.
         """

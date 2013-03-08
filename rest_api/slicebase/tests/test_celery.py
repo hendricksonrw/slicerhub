@@ -18,7 +18,7 @@ class TestCeleryTasks(unittest.TestCase):
     """Tests both the ability to add tasks but their functions as well.
     """
     def setUp(self):
-        self.db = connect('testing')
+        connect('testing')
         self.slice_job = create_dummy_job()
         self.slicer = SlicerFactory.SLIC3R
         self.version = Slic3rWrappers.VERSION097
@@ -36,6 +36,9 @@ class TestCeleryTasks(unittest.TestCase):
         """
 
         slice_job = create_dummy_job()
+        job = models.get_job_by_id(slice_job.job_id)
+        self.assertIsNotNone(job)
+        logging.info('starting task tests')
         tasks.process_job.delay(slice_job.job_id, self.slicer, self.version)
 
 
@@ -82,9 +85,10 @@ class TestCeleryTasks(unittest.TestCase):
 
 def create_dummy_job():
     num_jobs = len(models.SliceJob.objects) + 1
-    temp_job = models.SliceJob(
-        job_id=str(num_jobs), config='test.ini', stls=['test.stl'],
-        responses=['test@test.com'])
-    temp_job.save()
-    return temp_job
+    result = models.create_store_job(
+            num_jobs, 'test.ini', ['test@test.com'],
+            ['test.stl'])
+
+
+    return result
 

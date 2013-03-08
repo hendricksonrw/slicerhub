@@ -1,5 +1,5 @@
 
-
+import logging
 from celery import Celery
 import celeryconfig
 from slicebase.slicers import SlicerFactory
@@ -8,7 +8,7 @@ from task_helper import TaskHelper
 from slicebase import models
 from mongoengine import *
 
-connect('celery-db')
+#connect('celery-db')
 
 celery = Celery()
 celery.config_from_object(celeryconfig)
@@ -42,6 +42,7 @@ def process_job(slice_id, slicer_type, slicer_version):
         if not slice_id:
             return False
 
+        logging.info('trying to slice job %s' % str(slice_id))
         slice_job = models.get_job_by_id(slice_id)
 
 	# If we don't have everything we need bail

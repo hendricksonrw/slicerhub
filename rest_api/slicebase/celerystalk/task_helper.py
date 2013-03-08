@@ -17,7 +17,7 @@ class TaskHelper():
         if not slice_job.config or not slice_job.stls or not slice_job.job_id:
             return False, False
 
-        base = os.getcwd() + '/slices/' + slice_job.job_id + '/'
+        base = os.getcwd() + '/slices/' + str(slice_job.job_id) + '/'
         config_path = base + slice_job.config
         stl_paths = []
         for stl in slice_job.stls:
