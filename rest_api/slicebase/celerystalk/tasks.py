@@ -1,16 +1,20 @@
 
 
-import celery
-
+from celery import Celery
 import celeryconfig
 from slicebase.slicers import SlicerFactory
-from slicbase.slicers.slice_job import SliceState
+from slicebase.models import SliceState
 from task_helper import TaskHelper
+from slicebase import models
+from mongoengine import *
 
-celery = celery.config_from_object(celeryconfig)
+connect('celery-db')
+
+celery = Celery()
+celery.config_from_object(celeryconfig)
 
 @celery.task
-def process_job(slice_job, slicer_type, slicer_version):
+def process_job(slice_id, slicer_type, slicer_version):
 	"""Takes a slice_job and tries to generate gcode based on it.
 
         Rev 1: This is all local, there are no temp files or POST/GET calls
@@ -34,9 +38,14 @@ def process_job(slice_job, slicer_type, slicer_version):
             False if there was an error.
 	"""
 
+        # Need to get the slice_job from the db.
+        if not slice_id:
+            return False
+
+        slice_job = models.get_job_by_id(slice_id)
+
 	# If we don't have everything we need bail
 	if not slice_job or not slicer_type or not slicer_version:
-            TaskHelper.update_job_state(slice_job, SliceState.FAILED)
             return False
 
         # GET STL and write to temp dir
@@ -47,7 +56,7 @@ def process_job(slice_job, slicer_type, slicer_version):
 
         # POST that the slicing job has started
         slicer = SlicerFactory.create_slicer(slicer_type, slicer_version)
-        result = slicer.slice(stl_path, config_path, output)
+        result = slicer.slice_job_files(stl_path, config_path, output)
 
         # POST The status of the result of the job. If it sliced correctly
         # and gcode is availble to download POST SUCCESS status.

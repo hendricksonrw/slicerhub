@@ -7,8 +7,11 @@ import unittest
 from mongoengine import *
 
 from slicebase.celerystalk import TaskHelper
+from slicebase.celerystalk import tasks
 from slicebase.models import SliceJob
 from slicebase.models import SliceState
+from slicebase.slicers import SlicerFactory
+from slicebase.slicers.slic3rwrap import Slic3rWrappers
 from slicebase import models
 
 class TestCeleryTasks(unittest.TestCase):
@@ -17,10 +20,24 @@ class TestCeleryTasks(unittest.TestCase):
     def setUp(self):
         self.db = connect('testing')
         self.slice_job = create_dummy_job()
+        self.slicer = SlicerFactory.SLIC3R
+        self.version = Slic3rWrappers.VERSION097
 
     def tearDown(self):
         # Cleans up the testing db
         models.SliceJob.drop_collection()
+
+    def test_celery_process_task(self):
+        """Test the actual celery process by firing it off.
+
+        Requires a celery worker and mongodb to be running. See the shell
+        scripts in the celerystalk module. Will expand setup to make the call
+        to spin up a celery worker for testing.
+        """
+
+        slice_job = create_dummy_job()
+        tasks.process_job.delay(slice_job.job_id, self.slicer, self.version)
+
 
     def test_get_stl_config_path(self):
         """Given a job and job id can we get the full path to stl & config?

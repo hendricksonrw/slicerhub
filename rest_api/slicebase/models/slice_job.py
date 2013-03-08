@@ -30,6 +30,8 @@ class SliceJob(Document):
     public = BooleanField(default=True)
     priority = IntField(default=0)
 
+#TODO Need to move this to a config
+connect('testing')
 
 def create_job(job_id, config, responses, stls):
     """Create job.
@@ -45,7 +47,6 @@ def create_job(job_id, config, responses, stls):
 def create_store_job(job_id, config, responses, stls):
     """Create and add to db.
     """
-    connect('testing')
     job = create_job(job_id, config, responses, stls)
     result = job.save()
 

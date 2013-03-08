@@ -42,9 +42,6 @@ class TestSlicerBase(unittest.TestCase):
     def tearDown(self):
         """Need to remove any temp files used for testing.
         """
-        if not  hasattr(self, 'property'):
-            return None
-
         if not self.slice_id:
             return None
 
