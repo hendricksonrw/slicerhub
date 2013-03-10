@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import logging
-import os 
+import os
 import re
 import subprocess
 import sys
@@ -36,7 +36,7 @@ class SliceBase():
             logging.info('model %s' % str(model.file))
             model_raw = model.file.read()
             config_raw = config.file.read()
- 
+
             return SliceBase.process_slice_job(email, model_raw,
                     config_raw)
 
@@ -69,9 +69,44 @@ class SliceBase():
             return False
 
     @staticmethod
+    def write_files(slice_id, model_raw, config_raw, model_fn, config_fn):
+        """Takes the raw data and writes it to the right directory.
+        """
+
+        if not slice_id or not model_raw or not config_raw or not model_fn or not config_fn:
+            raise Exception
+
+        try:
+            # Make sure the slice has a unique folder
+            slice_id = str(slice_id)
+            slice_folder = os.path.join(os.getcwd(), 'slices', slice_id)
+
+            if os.path.exists(slice_folder):
+                slice_folder = os.path.join(os.getcwd(), 'slices', slice_id)
+            else:
+                os.makedirs(slice_folder)
+
+            # Write the 3D model to the new folder
+            model_filename = os.path.join(slice_folder, model_fn)
+            with open(model_filename, 'w') as f:
+                f.write(model_raw)
+                f.close()
+
+            config_filename = os.path.join(slice_folder, config_fn)
+            with open(config_filename, 'w') as f:
+                f.write(config_raw)
+                f.close()
+
+            return True
+
+        except Exception, e:
+            logging.info('Exception: %s' % str(e))
+            return False
+
+    @staticmethod
     def write_slice_files(
-            email, slicer, version, model_filename, model_raw, config_filename, 
-            config_raw):
+        email, slicer, version, model_filename, model_raw, config_filename,
+        config_raw):
         """Handles the slice request. Writes the 3d and config files
         to disk and stores the job in the db and adds it to the queue.
         This should be kicked off in a process to not block the return.
@@ -91,29 +126,13 @@ class SliceBase():
             output_filename = model_filename.replace('\.\w+', '') + '.gcode'
 
             # Write data to disk
-            # Make sure the slice has a unique folder
-            slice_id = repr(slicer.gen_slice_id())
-            slice_folder = os.path.join(os.getcwd(), 'slices', slice_id)
-            if os.path.exists(slice_folder):
-                slice_id = repr(slicer.gen_slice_id())
-                slice_folder = os.path.join(os.getcwd(), 'slices', slice_id)
-            else:
-                os.makedirs(slice_folder)
-
-            # Write the 3D model to the new folder
-            model_filename = os.path.join(slice_folder, model_filename)
-            with open(model_filename, 'w') as f:
-                f.write(model_raw)
-                f.close()
-
             # Write the Configuration to the new folder - If we have a user
+            slice_id = repr(slicer.gen_slice_id())
+            SliceBase.write_files(
+                slice_id, model_raw, config_raw, model_filename,
+                config_filename)
             # we need to write this config to their user dir
-            config_filename = os.path.join(slice_folder, config_filename)
-            with open(config_filename, 'w') as f:
-                f.write(config_raw)
-                f.close()
-
-            # Write into the DB an instance of the Slice
+                # Write into the DB an instance of the Slice
               # full path to stl, config, output
             # Slice should have timestamp of job start
             # Slice should have e-mail of who to send this too after
@@ -122,7 +141,7 @@ class SliceBase():
             return True , message, slice_id
 
         except Exception, e:
-                m = "Job add failed: " + str(sys.exc_info()[0]) + ":" + str(e)
-                return False, m
+            m = "Job add failed: " + str(sys.exc_info()[0]) + ":" + str(e)
+            return False, m
 
 

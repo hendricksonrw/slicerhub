@@ -13,19 +13,41 @@ from slicebase.models import SliceState
 from slicebase.slicers import SlicerFactory
 from slicebase.slicers.slic3rwrap import Slic3rWrappers
 from slicebase import models
+from slicebase import SliceBase
+
+
+dummy_jobs = []
 
 class TestCeleryTasks(unittest.TestCase):
     """Tests both the ability to add tasks but their functions as well.
     """
+
     def setUp(self):
         connect('testing')
         self.slice_job = create_dummy_job()
         self.slicer = SlicerFactory.SLIC3R
         self.version = Slic3rWrappers.VERSION097
 
+        self.model_filename = 'tests/test.stl'
+        f = open(self.model_filename, 'r')
+        self.model_raw = f.read()
+        self.model_filename = 'test.stl'
+        f.close()
+
+        self.config_filename = 'tests/test.ini'
+        g = open(self.config_filename, 'r')
+        self.config_raw = g.read()
+        self.config_filename = 'test.ini'
+        g.close()
+
     def tearDown(self):
         # Cleans up the testing db
-        models.SliceJob.drop_collection()
+        # models.SliceJob.drop_collection()
+
+        #for job_id in dummy_jobs:
+        #    models.remove_job_by_id(job_id)
+
+        print 'tear_down'
 
     def test_celery_process_task(self):
         """Test the actual celery process by firing it off.
@@ -36,6 +58,13 @@ class TestCeleryTasks(unittest.TestCase):
         """
 
         slice_job = create_dummy_job()
+
+        result = SliceBase.write_files(
+            slice_job.job_id, self.model_raw, self.config_raw,
+            self.model_filename, self.config_filename)
+
+        self.assertTrue(result)
+
         job = models.get_job_by_id(slice_job.job_id)
         self.assertIsNotNone(job)
         logging.info('starting task tests')
@@ -89,6 +118,7 @@ def create_dummy_job():
             num_jobs, 'test.ini', ['test@test.com'],
             ['test.stl'])
 
+    dummy_jobs.append(num_jobs)
 
     return result
 

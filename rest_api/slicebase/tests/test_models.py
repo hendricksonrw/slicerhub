@@ -10,7 +10,8 @@ class TestSliceJob(unittest.TestCase):
 
     def tearDown(self):
         # Cleans up the testing db
-        models.SliceJob.drop_collection()
+        # models.SliceJob.drop_collection()
+        print 'tear_down'
 
     def test_create_slice_job(self):
 

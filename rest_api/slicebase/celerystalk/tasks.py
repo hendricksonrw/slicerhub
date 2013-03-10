@@ -51,13 +51,15 @@ def process_job(slice_id, slicer_type, slicer_version):
 
         # GET STL and write to temp dir
         # GET config and write to temp dir
-        stl_path, config_path = TaskHelper.get_stl_config_path(slice_job)
+        stl_paths, config_path = TaskHelper.get_stl_config_path(slice_job)
 
-        output = TaskHelper.generate_output(slice_job)
+        outputs = TaskHelper.generate_output(slice_job)
 
         # POST that the slicing job has started
         slicer = SlicerFactory.create_slicer(slicer_type, slicer_version)
-        result = slicer.slice_job_files(stl_path, config_path, output)
+
+        for stl_path, output in zip(stl_paths, outputs):
+            result = slicer.slice_job(stl_path, config_path, output)
 
         # POST The status of the result of the job. If it sliced correctly
         # and gcode is availble to download POST SUCCESS status.
@@ -65,9 +67,10 @@ def process_job(slice_id, slicer_type, slicer_version):
         if not result:
             TaskHelper.update_job_state(slice_job, SliceState.FAILED)
 
-        TaskHelper.post_gcode(output_path)
+        # TaskHelper.post_gcode(output_path)
         TaskHelper.update_job_state(slice_job, SliceState.SUCCESS)
-        TaskHelper.cleanup_temp(file_paths)
+        logging.info('stls_sliced %s' % str(stl_paths))
+        # TaskHelper.cleanup_temp(file_paths)
 
         # Kick off 'Notification' task for this job
         send_results.delay(slice_job, result)
@@ -81,5 +84,5 @@ def send_results(slice_job, slicer_results):
 
 	# Build E-mail text
 	# Should contain what happened and a link to their gcode file
-        TaskHelper.send_notifications(slice_job)
+        TaskHelper.send_notifications(slice_job, slicer_results)
         return True

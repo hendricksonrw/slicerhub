@@ -60,7 +60,7 @@ class TaskHelper():
 
 
     @staticmethod
-    def send_notifications():
+    def send_notifications(slice_job, slice_results):
         """Iterates over notfication end points in the job and executes them.
 
         Rev1.1 Should send an e-mail saying x job was finished.

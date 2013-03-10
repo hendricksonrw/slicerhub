@@ -1,8 +1,10 @@
-CELERY_RESULT_BACKEND = 'mongodb'
+#CELERY_RESULT_BACKEND = 'mongodb'
 BROKER_HOST = 'localhost'
-BROKER_PORT = 27017
-BROKER_TRANSPORT = 'mongodb'
-BROKER_VHOST = 'celery-db'
+BROKER_PORT = 5672
+BROKER_TRANSPORT = 'amqp'
+BROKER_VHOST = 'test_host'
+BROKER_USER = 'test'
+BROKER_PASSWORD = 'test_pass'
 CELERY_MONGODB_BACKEND_SETTINGS = {
     'host': 'localhost',
     'port': 27017,
