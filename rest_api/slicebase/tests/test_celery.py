@@ -57,18 +57,19 @@ class TestCeleryTasks(unittest.TestCase):
         to spin up a celery worker for testing.
         """
 
-        slice_job = create_dummy_job()
+        for i in range(100):
+            slice_job = create_dummy_job()
 
-        result = SliceBase.write_files(
-            slice_job.job_id, self.model_raw, self.config_raw,
-            self.model_filename, self.config_filename)
+            result = SliceBase.write_files(
+                slice_job.job_id, self.model_raw, self.config_raw,
+                self.model_filename, self.config_filename)
 
-        self.assertTrue(result)
+            self.assertTrue(result)
 
-        job = models.get_job_by_id(slice_job.job_id)
-        self.assertIsNotNone(job)
-        logging.info('starting task tests')
-        tasks.process_job.delay(slice_job.job_id, self.slicer, self.version)
+            job = models.get_job_by_id(slice_job.job_id)
+            self.assertIsNotNone(job)
+            logging.info('starting task tests')
+            tasks.process_job.delay(slice_job.job_id, self.slicer, self.version)
 
 
     def test_get_stl_config_path(self):

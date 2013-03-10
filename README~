@@ -58,10 +58,7 @@ chmod +x the script and fire it off as sudo.
 SETUP
 
 RIGHT NOW - WILL CHANGE SOON
-You need to change inside of /rest_api/slicebase/slicers/slic3rwrap.py you need to change the path on line 24 to point to where YOU have slicer 0.9.7 installed (the bin folder).
-
-RIGHT NOW - WILL CHANGE SOON
-Just a reminder, the slices folder used to actually hold stls and inis and gcode will be relative to the current working directory.
+You need to change inside of /rest_api/slicebase/slicers/slic3rwrap.py 
 
 RUN TESTS
 
@@ -70,11 +67,7 @@ RUN TESTS
 
 nosetests /slicebase/tests/
 
-You should see about 15 tests run and your other terminal window running the messaging queue should be going nuts. RIGHT NOW the tests don't clean up after themselves very well but I'm working on that. You'll have lots of files in your slices folder that don't get cleaned up and the testing database on mongodb will just keep getting bigger and bigger.
-
-QUESTIONS - help
-
-I'm often on #reprap in the evenings as savorywatt. I'm also very available through G+ Search for Ross Hendrickson and find the guy who talks about 3D printing stuff all the time.
+You should see about 15 tests run and your other terminal window running the messaging queue should be going nuts.
 
 
 
