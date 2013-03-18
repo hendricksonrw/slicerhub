@@ -4,3 +4,7 @@ Celery
 nose
 requests
 celery-with-mongodb
+flask
+flask-script
+WTForms
+flask_mongoengine
