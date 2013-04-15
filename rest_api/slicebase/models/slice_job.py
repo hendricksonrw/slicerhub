@@ -1,5 +1,8 @@
+"""
+Copyright 2013 Ross Hendricksonn
+BSD License
+"""
 import datetime
-import logging
 
 from mongoengine import *
 

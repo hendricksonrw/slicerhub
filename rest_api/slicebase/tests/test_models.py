@@ -25,7 +25,6 @@ class TestSliceJob(unittest.TestCase):
         self.assertTrue(temp_job.id)
 
     def test_get_slice_job(self):
-
         """ Make sure we can get jobs based on job_id.
         """
         dummy_id = create_dummy_slice()

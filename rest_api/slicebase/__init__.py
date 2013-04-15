@@ -1,4 +1,7 @@
-#!/usr/bin/python
+"""
+Copyright 2013 Ross Hendricksonn
+BSD License
+"""
 import logging
 import os
 import re

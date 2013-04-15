@@ -1,3 +1,7 @@
+"""
+Copyright 2013 Ross Hendricksonn
+BSD License
+"""
 import slice_job
 
 SliceJob = slice_job.SliceJob

@@ -1,3 +1,7 @@
+"""
+Copyright 2013 Ross Hendricksonn
+BSD License
+"""
 from slic3rwrap import Slic3rWrappers
 
 class SlicerFactory():

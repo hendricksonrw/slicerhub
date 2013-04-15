@@ -1,4 +1,6 @@
 """
+Copyright 2013 Ross Hendricksonn
+BSD License
 """
 import unittest
 from mongoengine import *

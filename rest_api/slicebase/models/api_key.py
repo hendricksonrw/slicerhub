@@ -1,4 +1,7 @@
-
+"""
+Copyright 2013 Ross Hendricksonn
+BSD License
+"""
 
 class ApiKey():
 
