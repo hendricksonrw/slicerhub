@@ -1,0 +1,4 @@
+sliceapi is the general API that handles interfacig between external calls
+and the slicenode clusters that do the actual slicing.
+
+copyright Ross Hendrickson 2013

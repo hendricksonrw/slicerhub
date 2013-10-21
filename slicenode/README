@@ -1,0 +1,93 @@
+slicenode is designed to be run in a Docker container and is completely
+focused on only slicing files and then after the gcode is retrieved
+deleting the files. It will also be able to be run on a LAN to service
+an Octoprint server for offloaded slicing.
+
+#TODO:
+
+Currently this whole project is going through a major refactor into two
+separate but complimentary API WSGI applications. 
+
+slicenode will use rabbit-mq and celery to keep track of what work
+needs to be done asynchronusly.
+
+###API Description###
+/slice/
+
+POST
+
+Header
+ * slicenode API version as APIVERSION
+ * slicer name ('slic3r') as SLICERTYPE
+ * slicer version ('0.9.7') as SLICERVERSION
+ * an STL file
+ * a slicer config file
+ * bounce back URL to POST 'complete' against (not required)
+
+Response 202
+ * Location Header will have /slice/<id>
+
+Response 4** 
+ * Bad Signature etc.
+
+Response 5** 
+ * Server problem
+
+
+On a successful POST
+
+1. generate url (slice id GUID)
+2. write processing marker
+3. Insert Task
+   * slice
+   * send POST message
+   * remove marker and STL on success
+   * on fail remove processing marker and replace with fail marker
+
+
+
+##############################################################
+
+/slice/<id>
+
+GET
+
+Response 200
+ * still processing (processing marker still exists)
+
+Response 201
+ * returns the gcode URL
+
+Response 4**
+ * something errored out during slicing (error_marker exists)
+
+##############################################################
+/gcode/<id>
+
+
+GET
+
+Response 200
+ * serve the static gcode file
+
+Response 5**
+ * Server errors
+
+
+##############################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
