@@ -9,7 +9,7 @@ Currently this whole project is going through a major refactor into two
 separate but complimentary API WSGI applications. 
 
 slicenode will use rabbit-mq and celery to keep track of what work
-needs to be done asynchronusly.
+needs to be done asynchronously.
 
 ###API Description###
 /slice/
