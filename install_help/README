@@ -1,0 +1,24 @@
+Slicerhub requires several things to be installed in order to get everything
+up and running.
+
+1. First you need to install the python libraries using pip -r install requirements.txt
+2. install mongodb using the script or check to see if there is a new version.
+3. install RabbitMQ Server and configure a user for the celery user to use
+	see: http://docs.celeryproject.org/en/latest/getting-started/brokers/rabbitmq.htm
+
+
+Configuration
+
+Right now how exaclty everything gets configured is still in development.
+Essentially there will be these things that need to be configured
+
+Celery 
+
+in slicebase.celerystalk.celeryconfig
+Define your message broker and your user settings to 
+use RabbitMQ as your message broker
+
+DB - MongoDB
+Right now the data model uses MongoDB for persistance.
+I have yet to define where the user/pass and the default database should be.
+

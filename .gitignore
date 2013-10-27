@@ -1,0 +1,6 @@
+*.pyc
+*.swp
+*.stl
+*.ini
+*.gcode
+*.py~

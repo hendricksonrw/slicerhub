@@ -1,1 +1,70 @@
-Put Stuff here
+
+Slicerhub is a framework to power server based ('cloud!') slicing of 3D models for 3D printing. There will be a publicly addressable RESTful API up and running at Slicerhub.com soon. The project is fully open source under the AGPL license. Slicerhub allows much lower powered machines to have models sliced on a much more powerful machine all over the web. Imagine having a raspberry pi or other small computer controlling your printer and able to slice large complicated files in the cloud and download the gcode. Or run Slicerhub on your more powerful server at home and keep everything on site.
+
+Currently Slicerhub is in early alpha. The core functionality to power the RESTful API is done and I've stubbed out how I want to build the web addressable API layer which I hope to do in the next few weeks. The biggest chunks left to do are listed below and I welcome comments and help on them!
+
+Slicerhub uses falcon, mongodb, and rabbit-mq to do what needs done. There is a install_help folder in the root of the repo with a pip-styled requirements.txt and two shell scripts to install mongodb and rabbit-mq.
+
+General documentation on the RESTful API is here and the README on github explains how to install and get the task queue up and running.
+
+https://docs.google.com/document/d/1Ht6sI_kT_7gZLRYHBQ9EmMfS-7OljsGs8b-6GoUeARE/edit?usp=sharing
+
+This has been a labor of love so it isn't pretty and shiny and right now there is a lot of room for improvement. I hope that over the next while I'll be able to keep working on this and that the community will find it useful. I decided to release this now in its functionally but not web-addressable state so I could start getting feedback and help from the community for how to integrate it with other projects. I'm looking at you CoffeSCAD and Octoprint. Keep being awesome!
+
+Ross
+
+Brief intro video to Slicerhub's functionality is located on youtube at 
+http://www.youtube.com/watch?v=YUcKLBB-fpY
+
+INSTALL
+
+To get the project running on your local machine (able to run tests at least) there are a couple things you need to do.
+
+First
+1. Install all the libraries included in install_help/requirements.txt
+
+pip install -r requirements.txt
+
+pymongo
+mongoengine
+Celery
+nose
+requests
+celery-with-mongodb
+
+2. Install MongoDB
+take a look at install_help/mongo_install.sh
+if you like what you see, chmod +x it and fire it off as sudo
+
+3. Install rabbit-mq
+take a look at install_help/rabbit-mq_install.sh
+Change the user, user_pass, vhost to whatever you want to make sure it sets it up
+chmod +x the script and fire it off as sudo.
+
+4. in rest_api/slicebase/celerystalk/celeryconfig.py you need to change some things
+1. you need to make sure that your BROKER related variables match what you just set up.
+
+SETUP -- Due to the refactor the version that is in the OLD branch follows the below but the dev branch has broken away from these instructions.
+
+RIGHT NOW - WILL CHANGE SOON
+You need to change inside of /rest_api/slicebase/slicers/slic3rwrap.py you need to change the path on line 24 to point to where YOU have slicer 0.9.7 installed (the bin folder).
+
+RIGHT NOW - WILL CHANGE SOON
+Just a reminder, the slices folder used to actually hold stls and inis and gcode will be relative to the current working directory.
+
+RUN TESTS
+
+1. from the rest_api of the repo fire up ./tools/celery/start_test.sh in one terminal
+2. from another terminal (also in rest_api) fire
+
+nosetests /slicebase/tests/
+
+You should see about 15 tests run and your other terminal window running the messaging queue should be going nuts. RIGHT NOW the tests don't clean up after themselves very well but I'm working on that. You'll have lots of files in your slices folder that don't get cleaned up and the testing database on mongodb will just keep getting bigger and bigger.
+
+QUESTIONS - help
+
+I'm often on #reprap in the evenings as savorywatt. I'm also very available through G+ Search for Ross Hendrickson and find the guy who talks about 3D printing stuff all the time.
+
+
+
+
