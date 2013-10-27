@@ -1,20 +1,9 @@
 
-Slicerhub is a framework to power server based ('cloud!') slicing of 3D models for 3D printing. There will be a publicly addressable RESTful API up and running at Slicerhub.com soon. The project is fully open source under the BSD license. Slicerhub allows much lower powered machines to have models sliced on a much more powerful machine all over the web. Imagine having a raspberry pi or other small computer controlling your printer and able to slice large complicated files in the cloud and download the gcode. Or run Slicerhub on your more powerful server at home and keep everything on site.
+Slicerhub is a framework to power server based ('cloud!') slicing of 3D models for 3D printing. There will be a publicly addressable RESTful API up and running at Slicerhub.com soon. The project is fully open source under the AGPL license. Slicerhub allows much lower powered machines to have models sliced on a much more powerful machine all over the web. Imagine having a raspberry pi or other small computer controlling your printer and able to slice large complicated files in the cloud and download the gcode. Or run Slicerhub on your more powerful server at home and keep everything on site.
 
-Currently Slicerhub is in early alpha. The core functionality to power the RESTful API is done and I've stubbed out how I want to build the web addressable API layer which I hope to do in the next few weeks (check out rest_api/slice_entry.py). The biggest chunks left to do are listed below and I welcome comments and help on them!
+Currently Slicerhub is in early alpha. The core functionality to power the RESTful API is done and I've stubbed out how I want to build the web addressable API layer which I hope to do in the next few weeks. The biggest chunks left to do are listed below and I welcome comments and help on them!
 
-Major tasks ahead.
-
-0. Get rid of hard coded paths! Move all users, bin paths, writing paths, passwords for testing to a CONFIG file
-1. Finish actual bottle.py methods for the service endpoints to handle receiving files and then addressing the Slicerhub internal API layer to write those files and queue up tasks (internal API layer is finished).
-2. Write a lightweight client that simply posts jobs and serves gcode files
-3. Get the lightweight HTML client up and running on Slicerhub.com so people can send jobs to be sliced over the web
-4. Write an authentication layer (have a plan, just need more time) and start allowing applications to address a public queue for slicing. This will allow other developers to make calls against the internal API
-5. Build more robust task queues and have a server image dedicated to grabbing tasks and slicing them.
-The basic flow of a call is laid out below.
-
-
-Slicerhub uses bottle.py, mongodb, and rabbit-mq to do what needs done. There is a install_help folder in the root of the repo with a pip-styled requirements.txt and two shell scripts to install mongodb and rabbit-mq.
+Slicerhub uses falcon, mongodb, and rabbit-mq to do what needs done. There is a install_help folder in the root of the repo with a pip-styled requirements.txt and two shell scripts to install mongodb and rabbit-mq.
 
 General documentation on the RESTful API is here and the README on github explains how to install and get the task queue up and running.
 
@@ -55,7 +44,7 @@ chmod +x the script and fire it off as sudo.
 4. in rest_api/slicebase/celerystalk/celeryconfig.py you need to change some things
 1. you need to make sure that your BROKER related variables match what you just set up.
 
-SETUP
+SETUP -- Due to the refactor the version that is in the OLD branch follows the below but the dev branch has broken away from these instructions.
 
 RIGHT NOW - WILL CHANGE SOON
 You need to change inside of /rest_api/slicebase/slicers/slic3rwrap.py you need to change the path on line 24 to point to where YOU have slicer 0.9.7 installed (the bin folder).
