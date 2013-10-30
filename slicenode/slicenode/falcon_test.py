@@ -41,6 +41,16 @@ class SliceResource:
 
 		try:
 			raw_body = req.stream.read()
+			print str(req._params)
+			results = {}
+			config = req.get_param('config', False, results)
+			stl = req.get_param('fileupload', False, results)
+			print str(results)
+			print str(config)
+			print str(stl)
+			print str(len(raw_body))
+			print str(raw_body)
+			print str(slice_id)
 		except:
 			raise falcon.HTTPError(falcon.HTTP_748,
 								   'Read Error',
@@ -59,7 +69,6 @@ wsgi_app = api = falcon.API()
 db = StorageEngine()
 slices = SliceResource(db)
 api.add_route('/slices/{slice_id}/', slices)
-
 app = application = api
 
 if __name__ == '__main__':
